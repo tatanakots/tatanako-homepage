@@ -1,0 +1,34 @@
+name: Set Latest Docker Image Tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_sha:
+        description: 'The SHA tag of the image to set as latest'
+        required: true
+        default: ''
+
+jobs:
+  tag_latest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tag Docker image as latest
+        run: |
+          IMAGE=ghcr.io/${{ github.repository }}/tatanako-homepage
+          docker pull ${IMAGE}:${{ github.event.inputs.image_sha }}
+          docker tag ${IMAGE}:${{ github.event.inputs.image_sha }} ${IMAGE}:latest
+
+      - name: Push Docker image with latest tag
+        run: |
+          IMAGE=ghcr.io/${{ github.repository }}/tatanako-homepage
+          docker push ${IMAGE}:latest
