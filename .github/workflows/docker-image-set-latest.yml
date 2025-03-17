@@ -28,11 +28,11 @@ jobs:
 
       - name: Tag Docker image as latest
         run: |
-          IMAGE=ghcr.io/${{ github.repository }}/tatanako-homepage
+          IMAGE=ghcr.io/${{ github.repository }}
           docker pull ${IMAGE}:${{ github.event.inputs.image_sha }}
           docker tag ${IMAGE}:${{ github.event.inputs.image_sha }} ${IMAGE}:latest
 
       - name: Push Docker image with latest tag
         run: |
-          IMAGE=ghcr.io/${{ github.repository }}/tatanako-homepage
+          IMAGE=ghcr.io/${{ github.repository }}
           docker push ${IMAGE}:latest
